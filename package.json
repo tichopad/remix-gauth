@@ -8,7 +8,8 @@
     "dev": "remix dev --manual",
     "start": "remix-serve ./build/index.js",
     "typecheck": "tsc",
-    "migrate:generate": "drizzle-kit generate:sqlite"
+    "migrate": "drizzle-kit generate:sqlite && tsx drizzle/migrate.ts",
+    "studio": "drizzle-kit studio --port 3333"
   },
   "dependencies": {
     "@libsql/client": "0.4.0-pre.2",
@@ -20,6 +21,8 @@
     "isbot": "^3.6.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "remix-auth": "^3.6.0",
+    "remix-auth-google": "^2.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -27,8 +30,10 @@
     "@remix-run/eslint-config": "^2.3.1",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "dotenv": "^16.3.1",
     "drizzle-kit": "^0.20.6",
     "eslint": "^8.38.0",
+    "tsx": "^4.6.0",
     "typescript": "^5.1.6"
   },
   "engines": {

@@ -7,7 +7,8 @@ CREATE TABLE `cities` (
 --> statement-breakpoint
 CREATE TABLE `countries` (
 	`id` integer PRIMARY KEY NOT NULL,
-	`name` text
+	`name` text,
+	`size` integer
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `nameIdx` ON `countries` (`name`);

@@ -1,4 +1,6 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import { authenticator } from "~/server/auth";
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,34 +10,38 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const { user } = useLoaderData<typeof loader>();
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div>
+    <main style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
+      {user ? (
+        <>
+          <h1>Welcome {user.name}!</h1>
+          <p>Email: {user.email}</p>
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name ?? "User's profile picture"}
+            />
+          ) : null}
+          <Form method="post" action="/auth/google/logout">
+            <button>Sign out</button>
+          </Form>
+        </>
+      ) : (
+        <>
+          <h1>Welcome!</h1>
+          <Form method="post" action="/auth/google">
+            <button>Sign in with Google</button>
+          </Form>
+        </>
+      )}
+    </main>
   );
+}
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const user = await authenticator.isAuthenticated(request);
+
+  return { user };
 }

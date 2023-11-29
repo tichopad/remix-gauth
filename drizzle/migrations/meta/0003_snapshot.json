@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "0010c610-0f7c-49c7-94aa-dd930c902545",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "14422885-0cea-4836-afab-1ae82c685866",
+  "prevId": "488e7e31-f617-443c-8195-1fce9ee25873",
   "tables": {
-    "cities": {
-      "name": "cities",
+    "users": {
+      "name": "users",
       "columns": {
         "id": {
           "name": "id",
@@ -21,53 +21,30 @@
           "notNull": false,
           "autoincrement": false
         },
-        "country_id": {
-          "name": "country_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "cities_country_id_countries_id_fk": {
-          "name": "cities_country_id_countries_id_fk",
-          "tableFrom": "cities",
-          "tableTo": "countries",
-          "columnsFrom": [
-            "country_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "countries": {
-      "name": "countries",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
+        "email": {
+          "name": "email",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "size": {
-          "name": "size",
-          "type": "integer",
+        "avatar_url": {
+          "name": "avatar_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -77,7 +54,7 @@
         "nameIdx": {
           "name": "nameIdx",
           "columns": [
-            "name"
+            "email"
           ],
           "isUnique": true
         }
