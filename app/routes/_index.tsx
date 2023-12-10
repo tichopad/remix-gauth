@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { authenticator } from "~/server/auth";
+import { db } from "~/server/db/client";
+import { Wishlist } from "~/server/db/schema";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,7 +12,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user, ownedWishlists } = useLoaderData<typeof loader>();
 
   return (
     <main style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
@@ -27,6 +29,16 @@ export default function Index() {
           <Form method="post" action="/auth/google/logout">
             <button>Sign out</button>
           </Form>
+          <h2>Wishlists</h2>
+          <a href="/wishlist/create">Create a Wishlist</a>
+          <br />
+          <ul>
+            {ownedWishlists.map((wishlist) => (
+              <li key={wishlist.id}>
+                <a href={`/wishlist/${wishlist.id}`}>{wishlist.name}</a>
+              </li>
+            ))}
+          </ul>
         </>
       ) : (
         <>
@@ -43,5 +55,13 @@ export default function Index() {
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
 
-  return { user };
+  let ownedWishlists: Wishlist[] = [];
+
+  if (user) {
+    ownedWishlists = await db.query.wishlists.findMany({
+      where: (wishlists, { eq }) => eq(wishlists.ownerId, user.id),
+    });
+  }
+
+  return { user, ownedWishlists };
 }
