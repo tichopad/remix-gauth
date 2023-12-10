@@ -1,29 +1,29 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "0010c610-0f7c-49c7-94aa-dd930c902545",
+  "id": "d007d4d0-02da-4c54-aa50-a5a78bfa52a7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "cities": {
-      "name": "cities",
+    "user_wishlist_roles": {
+      "name": "user_wishlist_roles",
       "columns": {
-        "id": {
-          "name": "id",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "country_id": {
-          "name": "country_id",
+        "wishlist_id": {
+          "name": "wishlist_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -31,12 +31,25 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "cities_country_id_countries_id_fk": {
-          "name": "cities_country_id_countries_id_fk",
-          "tableFrom": "cities",
-          "tableTo": "countries",
+        "user_wishlist_roles_user_id_users_id_fk": {
+          "name": "user_wishlist_roles_user_id_users_id_fk",
+          "tableFrom": "user_wishlist_roles",
+          "tableTo": "users",
           "columnsFrom": [
-            "country_id"
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "user_wishlist_roles_wishlist_id_wishlists_id_fk": {
+          "name": "user_wishlist_roles_wishlist_id_wishlists_id_fk",
+          "tableFrom": "user_wishlist_roles",
+          "tableTo": "wishlists",
+          "columnsFrom": [
+            "wishlist_id"
           ],
           "columnsTo": [
             "id"
@@ -45,11 +58,20 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "user_wishlist_roles_user_id_wishlist_id_role_pk": {
+          "columns": [
+            "role",
+            "user_id",
+            "wishlist_id"
+          ],
+          "name": "user_wishlist_roles_user_id_wishlist_id_role_pk"
+        }
+      },
       "uniqueConstraints": {}
     },
-    "countries": {
-      "name": "countries",
+    "users": {
+      "name": "users",
       "columns": {
         "id": {
           "name": "id",
@@ -65,23 +87,74 @@
           "notNull": false,
           "autoincrement": false
         },
-        "size": {
-          "name": "size",
-          "type": "integer",
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "avatar_url": {
+          "name": "avatar_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         }
       },
       "indexes": {
-        "nameIdx": {
-          "name": "nameIdx",
+        "users_email_unique": {
+          "name": "users_email_unique",
           "columns": [
-            "name"
+            "email"
           ],
           "isUnique": true
         }
       },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "wishlists": {
+      "name": "wishlists",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}

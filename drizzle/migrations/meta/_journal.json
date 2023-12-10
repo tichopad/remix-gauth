@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1701209380017,
-      "tag": "0000_concerned_dracula",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1701211048054,
-      "tag": "0001_chemical_robin_chapel",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1701293600463,
-      "tag": "0002_remarkable_swordsman",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1701296539757,
-      "tag": "0003_careful_galactus",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1701903696051,
-      "tag": "0004_equal_dormammu",
+      "when": 1702247938994,
+      "tag": "0000_colossal_bloodaxe",
       "breakpoints": true
     }
   ]

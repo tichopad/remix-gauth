@@ -1,8 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { authenticator } from "~/server/auth";
-import { db } from "~/server/db/client";
-import { Wishlist } from "~/server/db/schema";
+import * as UserRepository from "~/server/repositories/user";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,18 +11,18 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const { user, ownedWishlists } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <main style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      {user ? (
+      {data.user !== null ? (
         <>
-          <h1>Welcome {user.name}!</h1>
-          <p>Email: {user.email}</p>
-          {user.avatarUrl ? (
+          <h1>Welcome {data.user.name}!</h1>
+          <p>Email: {data.user.email}</p>
+          {data.user.avatarUrl ? (
             <img
-              src={user.avatarUrl}
-              alt={user.name ?? "User's profile picture"}
+              src={data.user.avatarUrl}
+              alt={data.user.name ?? "User's profile picture"}
             />
           ) : null}
           <Form method="post" action="/auth/google/logout">
@@ -33,9 +32,12 @@ export default function Index() {
           <a href="/wishlist/create">Create a Wishlist</a>
           <br />
           <ul>
-            {ownedWishlists.map((wishlist) => (
-              <li key={wishlist.id}>
-                <a href={`/wishlist/${wishlist.id}`}>{wishlist.name}</a>
+            {data.userWithWishlists?.userWishlistRoles.map((userWishlist) => (
+              <li key={userWishlist.wishlistId}>
+                <a href={`/wishlist/${userWishlist.wishlistId}`}>
+                  {userWishlist.wishlist?.name ?? "Unknown"} (
+                  {userWishlist.role})
+                </a>
               </li>
             ))}
           </ul>
@@ -55,13 +57,11 @@ export default function Index() {
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
 
-  let ownedWishlists: Wishlist[] = [];
-
-  if (user) {
-    ownedWishlists = await db.query.wishlists.findMany({
-      where: (wishlists, { eq }) => eq(wishlists.ownerId, user.id),
-    });
+  if (user === null) {
+    return { user, userWithWishlists: null };
   }
 
-  return { user, ownedWishlists };
+  const userWithWishlists = await UserRepository.getWithWishlists(user.id);
+
+  return { user, userWithWishlists };
 }

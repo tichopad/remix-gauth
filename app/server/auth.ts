@@ -1,9 +1,9 @@
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy } from "remix-auth-google";
-import { users, type User, type UserInsert } from "~/server/db/schema";
-import { sessionStorage } from "~/server/session";
-import { db } from "./db/client";
 import { z } from "zod";
+import { type User } from "~/server/db/schema";
+import * as UserRepository from "~/server/repositories/user";
+import { sessionStorage } from "~/server/session";
 
 const env = z
   .object({
@@ -21,6 +21,7 @@ const googleStrategy = new GoogleStrategy(
     clientSecret: env.GOOGLE_CLIENT_SECRET,
     callbackURL: env.GOOGLE_CALLBACK_URL,
     accessType: "offline",
+    prompt: "select_account",
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
     const profileEmail = profile.emails?.[0].value;
@@ -29,19 +30,17 @@ const googleStrategy = new GoogleStrategy(
       throw new Error("No email found in Google profile");
     }
 
-    const newUserValues: UserInsert = {
+    const user = await UserRepository.upsert({
       email: profileEmail,
       refreshToken,
       name: profile.displayName,
       accessToken,
       avatarUrl: profile.photos?.[0].value,
-    };
+    });
 
-    const [user] = await db
-      .insert(users)
-      .values(newUserValues)
-      .onConflictDoUpdate({ target: users.email, set: newUserValues })
-      .returning();
+    if (!user) {
+      throw new Error("Failed to create user");
+    }
 
     return user;
   }
