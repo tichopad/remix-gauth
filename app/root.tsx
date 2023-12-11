@@ -8,12 +8,16 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import rdtStylesheet from "remix-development-tools/index.css";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  ...(process.env.NODE_ENV === "development"
+    ? [{ rel: "stylesheet", href: rdtStylesheet }]
+    : []),
 ];
 
-export default function App() {
+function App() {
   return (
     <html lang="en">
       <head>
@@ -31,3 +35,12 @@ export default function App() {
     </html>
   );
 }
+
+let AppExport = App;
+
+if (process.env.NODE_ENV === "development") {
+  const { withDevTools } = await import("remix-development-tools");
+  AppExport = withDevTools(AppExport);
+}
+
+export default AppExport;
